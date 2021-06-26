@@ -13,8 +13,12 @@ import java.util.LinkedHashMap;
 public class TokenCreateTransaction extends Transaction<TokenCreateTransaction> {
     private final TokenCreateTransactionBody.Builder builder;
 
-    AccountId treasuryAccountId;
-    AccountId autoRenewAccountId;
+    @Nullable
+    CustomFeeList customFeeList = null;
+    @Nullable
+    AccountId treasuryAccountId = null;
+    @Nullable
+    AccountId autoRenewAccountId = null;
 
     public TokenCreateTransaction() {
         builder = TokenCreateTransactionBody.newBuilder();
@@ -194,6 +198,16 @@ public class TokenCreateTransaction extends Transaction<TokenCreateTransaction> 
         return this;
     }
 
+    public TokenCreateTransaction setCustomFeeList(@Nullable CustomFeeList customFeeList) {
+        this.customFeeList = customFeeList;
+        return this;
+    }
+
+    @Nullable
+    public CustomFeeList getCustomFeeList() {
+        return customFeeList != null ? customFeeList.deepClone() : null;
+    }
+
     public TokenCreateTransaction freezeWith(@Nullable Client client) {
         if (
             builder.hasAutoRenewPeriod() &&
@@ -221,6 +235,7 @@ public class TokenCreateTransaction extends Transaction<TokenCreateTransaction> 
 
     @Override
     void validateNetworkOnIds(Client client) {
+        // TODO: customFeeList
         if (treasuryAccountId != null) {
             treasuryAccountId.validate(client);
         }
