@@ -21,7 +21,7 @@ class Node extends ManagedNode implements Comparable<Node>{
 
     void increaseDelay() {
         this.delayUntil = System.currentTimeMillis() + this.delay;
-        this.delay = Math.min(this.delay * 2, 8000);
+        this.delay = this.delay * 2;
     }
 
     void decreaseDelay() {
@@ -34,14 +34,12 @@ class Node extends ManagedNode implements Comparable<Node>{
 
     @Override
     public int compareTo(Node node) {
-        if (this.isHealthy() && node.isHealthy()) {
+        if (this.isHealthy() == node.isHealthy()) {
             return compareToSameHealth(node);
         } else if (this.isHealthy() && !node.isHealthy()) {
             return -1;
-        } else if (!this.isHealthy() && node.isHealthy()) {
-            return 1;
         } else {
-            return compareToSameHealth(node);
+            return 1;
         }
     }
 

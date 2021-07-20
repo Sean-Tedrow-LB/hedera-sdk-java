@@ -118,13 +118,6 @@ abstract class Executable<SdkRequestT, ProtoRequestT, ResponseT, O> implements W
 
         logger.trace("Sending request #{} to node {}: {}", attempt, node.accountId, this);
 
-        if (!node.isHealthy()) {
-            logger.warn("Using unhealthy node {}. Delaying attempt #{} for {} ms", node.accountId, attempt, node.delayUntil);
-
-            return Delayer.delayFor(node.delay(), client.executor)
-                .thenCompose((v) -> executeAsync(client, attempt + 1, lastException));
-        }
-
         var methodDescriptor = getMethodDescriptor();
         var call = node.getChannel().newCall(methodDescriptor, CallOptions.DEFAULT);
         var request = makeRequest();
